@@ -13,6 +13,7 @@ model User {
   email             String   @unique
   password          String
   createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now())
 
   accounts          Account[]
 }
@@ -24,6 +25,8 @@ model Account {
   balance           Float
   userId            String
   institutionId     String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now())
 
   user              User          @relation(fields: [userId], references: [id])
   institution       Institution   @relation(fields: [institutionId], references: [id])
@@ -37,6 +40,8 @@ model Transaction {
   description       String
   date              DateTime @default(now())
   accountId         String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now())
 
   account           Account  @relation(fields: [accountId], references: [id])
 }
@@ -46,6 +51,8 @@ model Institution {
   name              String
   code              String
   logo              String
-
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now())
+  
   accounts          Account[]
 }
