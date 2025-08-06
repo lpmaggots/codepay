@@ -15,6 +15,7 @@ import { CacheInterceptor } from '@nestjs/cache-manager'
 import { TransactionsService } from './transactions.service'
 import { CreateTransactionDto } from './dto/create-transaction.dto'
 import { UpdateTransactionDto } from './dto/update-transaction.dto'
+import { TransactionsFilterDto } from './dto/transactions-filter.dto'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from '@/src/auth/jwt/jwt-auth.guard'
 
@@ -35,23 +36,9 @@ export class TransactionsController {
 
   @Get()
   @ApiOperation({ summary: 'List transactions with pagination and filters' })
-  findAll(
-    @Request() req,
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
-    @Query('startDate') startDate?: string,
-    @Query('endDate') endDate?: string,
-    @Query('type') type?: string,
-  ) {
+  findAll(@Request() req, @Query() filters: TransactionsFilterDto) {
     const userId = req.user.sub
-    return this.service.findAll({
-      userId,
-      page,
-      limit,
-      startDate,
-      endDate,
-      type,
-    })
+    return this.service.findAll({ userId, ...filters })
   }
 
   @Get(':id')

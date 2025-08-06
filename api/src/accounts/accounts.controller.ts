@@ -11,6 +11,7 @@ import {
 import { AccountsService } from './accounts.service'
 import { CreateAccountDto } from './dto/create-account.dto'
 import { UpdateAccountDto } from './dto/update-account.dto'
+import { AccountsFilterDto } from './dto/accounts-filter.dto'
 import { ApiTags, ApiOperation } from '@nestjs/swagger'
 
 @ApiTags('accounts')
@@ -26,18 +27,8 @@ export class AccountsController {
 
   @Get()
   @ApiOperation({ summary: 'List accounts with pagination and filters' })
-  findAll(
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
-    @Query('orderBy') orderBy?: string,
-    @Query('institutionId') institutionId?: string,
-  ) {
-    return this.service.findAll({
-      page,
-      limit,
-      orderBy,
-      institutionId,
-    })
+  findAll(@Query() filters: AccountsFilterDto) {
+    return this.service.findAll(filters)
   }
 
   @Get(':id')

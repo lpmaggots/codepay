@@ -11,6 +11,7 @@ import {
 import { InstitutionsService } from './institutions.service'
 import { CreateInstitutionDto } from './dto/create-institution.dto'
 import { UpdateInstitutionDto } from './dto/update-institution.dto'
+import { InstitutionsFilterDto } from './dto/institutions-filter.dto'
 import { ApiTags, ApiOperation } from '@nestjs/swagger'
 
 @ApiTags('institutions')
@@ -26,14 +27,8 @@ export class InstitutionsController {
 
   @Get()
   @ApiOperation({ summary: 'List institutions with pagination and filters' })
-  findAll(
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
-    @Query('orderBy') orderBy?: string,
-    @Query('name') name?: string,
-    @Query('code') code?: string,
-  ) {
-    return this.service.findAll({ page, limit, orderBy, name, code })
+  findAll(@Query() filters: InstitutionsFilterDto) {
+    return this.service.findAll(filters)
   }
 
   @Get(':id')

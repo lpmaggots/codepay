@@ -11,6 +11,7 @@ import {
 import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
+import { UsersFilterDto } from './dto/users-filter.dto'
 import { ApiTags, ApiOperation } from '@nestjs/swagger'
 
 @ApiTags('users')
@@ -26,11 +27,8 @@ export class UsersController {
 
   @Get()
   @ApiOperation({ summary: 'List users with pagination' })
-  findAll(
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
-  ) {
-    return this.usersService.findAll({ page, limit })
+  findAll(@Query() filters: UsersFilterDto) {
+    return this.usersService.findAll(filters)
   }
 
   @Get(':id')

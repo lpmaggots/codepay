@@ -12,12 +12,15 @@ export class AccountsService {
   }
 
   async findAll(query: {
-    page?: number
-    limit?: number
+    page?: number | string
+    limit?: number | string
     orderBy?: string
     institutionId?: string
   }) {
-    const { page = 1, limit = 10, orderBy = 'createdAt', institutionId } = query
+    const page = Math.max(1, Number(query.page) || 1)
+    const limit = Math.max(1, Number(query.limit) || 10)
+    const orderBy = query.orderBy || 'createdAt'
+    const institutionId = query.institutionId
 
     const where = institutionId ? { institutionId } : {}
 
@@ -43,7 +46,10 @@ export class AccountsService {
   }
 
   findOne(id: string) {
-    return this.prisma.account.findUnique({ where: { id }, include: { institution: true } })
+    return this.prisma.account.findUnique({
+      where: { id },
+      include: { institution: true },
+    })
   }
 
   update(id: string, data: UpdateAccountDto) {

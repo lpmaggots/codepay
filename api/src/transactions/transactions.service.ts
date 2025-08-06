@@ -28,19 +28,19 @@ export class TransactionsService {
     })
 
     if (!account) {
-      throw new NotFoundException('Conta não encontrada')
+      throw new NotFoundException('Account not found')
     }
 
     if (account.userId !== userId) {
-      throw new ForbiddenException('Você não tem acesso a essa conta')
+      throw new ForbiddenException('You do not have access to this account')
     }
 
     if (amount <= 0) {
-      throw new ForbiddenException('O valor da transação deve ser positivo')
+      throw new ForbiddenException('Transaction amount must be positive')
     }
 
     if (type === 'DEBIT' && account.balance < amount) {
-      throw new ForbiddenException('Saldo insuficiente')
+      throw new ForbiddenException('Insufficient balance')
     }
 
     const updatedBalance =
@@ -119,7 +119,7 @@ export class TransactionsService {
     })
 
     if (!transaction || transaction.account.userId !== userId) {
-      throw new ForbiddenException('Transação não encontrada ou não autorizada')
+      throw new ForbiddenException('Transaction not found or not authorized')
     }
 
     return transaction
