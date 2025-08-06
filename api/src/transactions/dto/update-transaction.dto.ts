@@ -1,15 +1,4 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator'
+import { PartialType } from '@nestjs/swagger'
+import { CreateTransactionDto } from './create-transaction.dto'
 
-export class UpdateTransactionDto {
-  @IsOptional()
-  @IsString()
-  type?: string
-
-  @IsOptional()
-  @IsNumber()
-  amount?: number
-
-  @IsOptional()
-  @IsString()
-  description?: string
-}
+export class UpdateTransactionDto extends PartialType(CreateTransactionDto) {}
