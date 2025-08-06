@@ -8,9 +8,14 @@ import { AccountsModule } from './accounts/accounts.module'
 import { TransactionsModule } from './transactions/transactions.module'
 import { InstitutionsModule } from './institutions/institutions.module'
 import { PrismaModule } from '@/prisma/prisma.module'
+import { ConfigModule } from '@nestjs/config'
+
 @Module({
   imports: [
     CacheModule.register({
+      isGlobal: true
+    }),
+    ConfigModule.forRoot({
       isGlobal: true
     }),
     AuthModule,
