@@ -6,9 +6,12 @@ import {
   Param,
   Delete,
   Put,
-  UseGuards,
+  Query,
   Request,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common'
+import { CacheInterceptor } from '@nestjs/cache-manager'
 import { TransactionsService } from './transactions.service'
 import { CreateTransactionDto } from './dto/create-transaction.dto'
 import { UpdateTransactionDto } from './dto/update-transaction.dto'
@@ -18,6 +21,7 @@ import { JwtAuthGuard } from '@/src/auth/jwt/jwt-auth.guard'
 @ApiTags('transactions')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(CacheInterceptor)
 @Controller('transactions')
 export class TransactionsController {
   constructor(private readonly service: TransactionsService) {}
@@ -30,10 +34,24 @@ export class TransactionsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'List all transactions for the user' })
-  findAll(@Request() req) {
+  @ApiOperation({ summary: 'List transactions with pagination and filters' })
+  findAll(
+    @Request() req,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+    @Query('type') type?: string,
+  ) {
     const userId = req.user.sub
-    return this.service.findAll(userId)
+    return this.service.findAll({
+      userId,
+      page,
+      limit,
+      startDate,
+      endDate,
+      type,
+    })
   }
 
   @Get(':id')

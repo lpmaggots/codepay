@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+  Query,
+} from '@nestjs/common'
 import { AccountsService } from './accounts.service'
 import { CreateAccountDto } from './dto/create-account.dto'
 import { UpdateAccountDto } from './dto/update-account.dto'
@@ -16,9 +25,19 @@ export class AccountsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'List all accounts' })
-  findAll() {
-    return this.service.findAll()
+  @ApiOperation({ summary: 'List accounts with pagination and filters' })
+  findAll(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('orderBy') orderBy?: string,
+    @Query('institutionId') institutionId?: string,
+  ) {
+    return this.service.findAll({
+      page,
+      limit,
+      orderBy,
+      institutionId,
+    })
   }
 
   @Get(':id')

@@ -11,24 +11,43 @@ export class AccountsService {
     return this.prisma.account.create({ data })
   }
 
-  findAll() {
-    return this.prisma.account.findMany({
-      include: { transactions: true, user: true, institution: true },
-    })
+  async findAll(query: {
+    page?: number
+    limit?: number
+    orderBy?: string
+    institutionId?: string
+  }) {
+    const { page = 1, limit = 10, orderBy = 'createdAt', institutionId } = query
+
+    const where = institutionId ? { institutionId } : {}
+
+    const [accounts, total] = await Promise.all([
+      this.prisma.account.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { [orderBy]: 'desc' },
+        include: { institution: true },
+      }),
+      this.prisma.account.count({ where }),
+    ])
+
+    return {
+      data: accounts,
+      meta: {
+        total,
+        page,
+        lastPage: Math.ceil(total / limit),
+      },
+    }
   }
 
   findOne(id: string) {
-    return this.prisma.account.findUnique({
-      where: { id },
-      include: { transactions: true },
-    })
+    return this.prisma.account.findUnique({ where: { id }, include: { institution: true } })
   }
 
   update(id: string, data: UpdateAccountDto) {
-    return this.prisma.account.update({
-      where: { id },
-      data,
-    })
+    return this.prisma.account.update({ where: { id }, data })
   }
 
   remove(id: string) {

@@ -11,22 +11,46 @@ export class InstitutionsService {
     return this.prisma.institution.create({ data })
   }
 
-  findAll() {
-    return this.prisma.institution.findMany({ include: { accounts: true } })
+  async findAll(query: {
+    page?: number
+    limit?: number
+    orderBy?: string
+    name?: string
+    code?: string
+  }) {
+    const { page = 1, limit = 10, orderBy = 'createdAt', name, code } = query
+
+    const where: any = {}
+
+    if (name) where.name = { contains: name, mode: 'insensitive' }
+    if (code) where.code = { contains: code, mode: 'insensitive' }
+
+    const [institutions, total] = await Promise.all([
+      this.prisma.institution.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { [orderBy]: 'desc' },
+      }),
+      this.prisma.institution.count({ where }),
+    ])
+
+    return {
+      data: institutions,
+      meta: {
+        total,
+        page,
+        lastPage: Math.ceil(total / limit),
+      },
+    }
   }
 
   findOne(id: string) {
-    return this.prisma.institution.findUnique({
-      where: { id },
-      include: { accounts: true },
-    })
+    return this.prisma.institution.findUnique({ where: { id } })
   }
 
   update(id: string, data: UpdateInstitutionDto) {
-    return this.prisma.institution.update({
-      where: { id },
-      data,
-    })
+    return this.prisma.institution.update({ where: { id }, data })
   }
 
   remove(id: string) {

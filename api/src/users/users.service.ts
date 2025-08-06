@@ -3,6 +3,11 @@ import { PrismaService } from '@/prisma/prisma.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 
+interface FindAllQuery {
+  page?: number
+  limit?: number
+}
+
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
@@ -11,10 +16,26 @@ export class UsersService {
     return this.prisma.user.create({ data })
   }
 
-  findAll() {
-    return this.prisma.user.findMany({
-      include: { accounts: true },
-    })
+  async findAll(query: FindAllQuery) {
+    const { page = 1, limit = 10 } = query
+
+    const [users, total] = await Promise.all([
+      this.prisma.user.findMany({
+        skip: (page - 1) * limit,
+        take: limit,
+        include: { accounts: true },
+      }),
+      this.prisma.user.count(),
+    ])
+
+    return {
+      data: users,
+      meta: {
+        total,
+        page,
+        lastPage: Math.ceil(total / limit),
+      },
+    }
   }
 
   findOne(id: string) {
