@@ -1,30 +1,46 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+  UseGuards,
+  Request,
+} from '@nestjs/common'
 import { TransactionsService } from './transactions.service'
 import { CreateTransactionDto } from './dto/create-transaction.dto'
 import { UpdateTransactionDto } from './dto/update-transaction.dto'
-import { ApiTags, ApiOperation } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { JwtAuthGuard } from '@/src/auth/jwt/jwt-auth.guard'
 
 @ApiTags('transactions')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('transactions')
 export class TransactionsController {
   constructor(private readonly service: TransactionsService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new transaction' })
-  create(@Body() dto: CreateTransactionDto) {
-    return this.service.create(dto)
+  create(@Request() req, @Body() dto: CreateTransactionDto) {
+    const userId = req.user.sub
+    return this.service.create(userId, dto)
   }
 
   @Get()
-  @ApiOperation({ summary: 'List all transactions' })
-  findAll() {
-    return this.service.findAll()
+  @ApiOperation({ summary: 'List all transactions for the user' })
+  findAll(@Request() req) {
+    const userId = req.user.sub
+    return this.service.findAll(userId)
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get transaction by ID' })
-  findOne(@Param('id') id: string) {
-    return this.service.findOne(id)
+  findOne(@Request() req, @Param('id') id: string) {
+    const userId = req.user.sub
+    return this.service.findOne(userId, id)
   }
 
   @Put(':id')
