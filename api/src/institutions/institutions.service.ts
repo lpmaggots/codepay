@@ -60,9 +60,18 @@ export class InstitutionsService implements OnModuleInit {
   }) {
     const { page = 1, limit = 10, orderBy = 'createdAt', name, code } = query
     const where: any = {};
+ 
+    if (name) {
+      where.name = {
+        contains: name.toLowerCase(),
+      }
+    }
 
-    if (name) where.name = { contains: name, mode: 'insensitive' }
-    if (code) where.code = { contains: code, mode: 'insensitive' }
+    if (code) {
+      where.code = {
+        contains: code.toLowerCase(),
+      }
+    }
 
     const [institutions, total] = await Promise.all([
       this.prisma.institution.findMany({
