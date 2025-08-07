@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import '@/styles/globals.scss'
+import { Theme } from '@/providers/Theme'
 
 export const metadata: Metadata = {
   title: 'CodePay',
@@ -17,9 +18,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-br">
+    <html lang="pt-br" suppressHydrationWarning>
       <body>
-        {children}
+        <Theme>
+          {children}
+        </Theme>
       </body>
     </html>
   );

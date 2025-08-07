@@ -1,24 +1,17 @@
 @use "tailwindcss" as *;
+@use "./base" as *;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --bg-color: #F8F9FA;
+  --text-color: #121212;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --bg-color: #0A0F1C;
+  --text-color: #F2F2F2;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
