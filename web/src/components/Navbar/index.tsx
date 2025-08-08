@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import Logo from '@/assets/images/codepay-logo.png'
-import { FiLogIn, FiMenu, FiX } from 'react-icons/fi'
+import { FiLogIn, FiUser, FiMenu, FiX } from 'react-icons/fi'
 import { useState } from 'react'
 
 export default function Navbar() {
@@ -17,7 +17,7 @@ export default function Navbar() {
 
   return (
     <nav className="w-full bg-white shadow-sm shadow-gray-300">
-      <div className="flex items-center justify-between h-20 px-4 max-w-7xl mx-auto">
+      <div className="flex items-center justify-between h-20 px-2 md:px-0 max-w-7xl mx-auto">
         <Link href="/">
           <Image
             src={Logo}
@@ -29,13 +29,13 @@ export default function Navbar() {
         </Link>
 
         <div className="md:hidden">
-          <button onClick={() => setIsOpen(!isOpen)} className="text-2xl text-gray-700 cursor-pointer">
+          <button onClick={() => setIsOpen(!isOpen)} className="text-2xl text-gray-700 mt-2 cursor-pointer">
             {isOpen ? <FiX /> : <FiMenu />}
           </button>
         </div>
 
         {/* Desktop */}
-        <div className="hidden md:flex items-center space-x-3">
+        <div className="hidden md:flex items-center space-x-4">
           <section className="flex space-x-2">
             {navLinks.map(({ label, href }) => (
               <Link
@@ -47,18 +47,19 @@ export default function Navbar() {
               </Link>
             ))}
           </section>
-          <button
-            type="button"
-            className="bg-purple-700 text-white py-2 px-4 rounded hover:bg-purple-800 transition"
+          <Link
+            href="/login"
+            className="bg-purple-700 text-white py-2 px-4 rounded hover:bg-purple-800 transition cursor-pointer"
           >
             Login
             <FiLogIn className="inline ml-2" />
-          </button>
+          </Link>
           <Link
             href="/register"
-            className="bg-emerald-500 text-white py-2 px-4 rounded hover:bg-emerald-600 transition"
+            className="bg-emerald-500 text-white py-2 px-4 rounded hover:bg-emerald-600 transition cursor-pointer"
           >
             Cadastre-se
+            <FiUser className="inline ml-2" />
           </Link>
         </div>
       </div>
@@ -75,18 +76,19 @@ export default function Navbar() {
               {label}
             </Link>
           ))}
-          <button
-            type="button"
-            className="w-full bg-purple-700 text-white py-2 px-4 rounded hover:bg-purple-800 transition flex items-center justify-center"
+          <Link
+            href="/login"
+            className="w-full bg-purple-700 text-white py-2 px-4 rounded hover:bg-purple-800 transition flex items-center justify-center cursor-pointer"
           >
             Login
             <FiLogIn className="inline ml-2" />
-          </button>
+          </Link>
           <Link
             href="/register"
-            className="block w-full text-center bg-emerald-500 text-white py-2 px-4 rounded hover:bg-emerald-600 transition"
+            className="block w-full text-center bg-emerald-500 text-white py-2 px-4 rounded hover:bg-emerald-600 transition cursor-pointer"
           >
             Cadastre-se
+            <FiUser className="inline ml-2" />
           </Link>
         </div>
       )}

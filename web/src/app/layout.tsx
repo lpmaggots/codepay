@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import '@/styles/globals.scss'
 import { Theme } from '@/providers/Theme'
 import Navbar from '@/components/Navbar'
+import AddTransaction from '@/components/AddTransaction'
 
 export const metadata: Metadata = {
   title: 'CodePay',
@@ -24,6 +25,7 @@ export default function RootLayout({
         <Theme>
           <Navbar />
           {children}
+          <AddTransaction />
         </Theme>
       </body>
     </html>
