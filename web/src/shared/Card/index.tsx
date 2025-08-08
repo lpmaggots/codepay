@@ -1,8 +1,14 @@
 import { ReactNode } from 'react'
 
-export default function Card({ children }: { children: ReactNode }) {
+interface CardProps {
+  children: ReactNode,
+  className?: string,
+}
+
+
+export default function Card({ children, className }: CardProps) {
   return (
-    <div className="flex flex-col bg-gray-300/70 p-4 rounded-lg gap-2 hover:bg-gray-300/80 transition duration-300">
+    <div className={`bg-white p-6 rounded-lg shadow-md border border-gray-200 ${className}`}>
       {children}
     </div>
   )
