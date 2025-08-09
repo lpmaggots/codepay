@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import '@/styles/globals.scss'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { Theme } from '@/providers/Theme'
 import Navbar from '@/components/Navbar'
 import AddTransaction from '@/components/AddTransaction'
@@ -26,6 +28,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <AddTransaction />
+          <ToastContainer position="bottom-center" autoClose={3000} />
         </Theme>
       </body>
     </html>

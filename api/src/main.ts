@@ -6,6 +6,16 @@ import { ValidationPipe } from '@nestjs/common'
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
 
+  if (process.env.NODE_ENV === 'production') {
+    app.enableCors({
+      origin: ['https://teste.com'],
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      credentials: true
+    })
+  } else {
+    app.enableCors()
+  }
+
   app.useGlobalPipes(new ValidationPipe())
 
   const config = new DocumentBuilder()
@@ -18,7 +28,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('api', app, document)
 
-  await app.listen(process.env.PORT ?? 3000)
+  await app.listen(process.env.PORT ?? 4000)
 }
 
 bootstrap()
