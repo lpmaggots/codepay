@@ -4,6 +4,7 @@ import Container from '@/shared/Container'
 import Card from '@/shared/Card'
 import Input from '@/shared/Input'
 import Button from '@/shared/Button'
+import BackToHome from '@/components/BackToHome'
 
 import { api } from '@/lib/api'
 import { useForm } from 'react-hook-form'
@@ -29,7 +30,8 @@ export default function Register() {
 
   return (
     <Container>
-      <div className="flex items-center justify-center min-h-[calc(100vh-90px)]">
+      <BackToHome />
+      <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
         <Card className="w-full max-w-md space-y-6">
           <h2 className="text-2xl font-bold text-center text-gray-900">Cadastre-se</h2>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
