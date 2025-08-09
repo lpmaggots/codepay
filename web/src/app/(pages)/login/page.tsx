@@ -12,10 +12,11 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoginSchema, loginSchema } from '@/schemas/loginSchema'
 import { toast } from 'react-toastify'
-
+import { useAuth } from '@/providers/AuthContext'
 
 export default function Login() {
   const router = useRouter()
+  const { login } = useAuth()
 
   const { register, handleSubmit, formState: { errors, isSubmitting }  } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema)
@@ -25,7 +26,8 @@ export default function Login() {
     try {
       const response = await api.post('auth/login', data)
       if (response) {
-        localStorage.setItem('token', response.data?.access_token)
+        const { access_token, user } = response.data
+        login(access_token, user)
         toast.success('Login realizado!!')
         router.push('/dashboard')
       }

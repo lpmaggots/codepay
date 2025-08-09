@@ -2,9 +2,11 @@ import type { Metadata } from 'next'
 import '@/styles/globals.scss'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+
 import { Theme } from '@/providers/Theme'
+import { AuthProvider } from '@/providers/AuthContext'
+
 import Navbar from '@/components/Navbar'
-import AddTransaction from '@/components/AddTransaction'
 
 export const metadata: Metadata = {
   title: 'CodePay',
@@ -16,21 +18,22 @@ export const metadata: Metadata = {
   }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="pt-br" suppressHydrationWarning>
       <body>
         <Theme>
-          <Navbar />
-          {children}
-          <AddTransaction />
-          <ToastContainer position="bottom-center" autoClose={3000} />
+          <AuthProvider>
+            <Navbar />
+            {children}
+            <ToastContainer position="bottom-center" autoClose={3000} />
+          </AuthProvider>
         </Theme>
       </body>
     </html>
-  );
+  )
 }

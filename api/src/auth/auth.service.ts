@@ -1,45 +1,49 @@
-import { Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable } from '@nestjs/common'
+import * as bcrypt from 'bcrypt'
+import { JwtService } from '@nestjs/jwt'
 
-import { UsersService } from 'src/users/users.service';
-import { PrismaService } from '@/prisma/prisma.service';
+import { UsersService } from 'src/users/users.service'
+import { PrismaService } from '@/prisma/prisma.service'
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private prisma: PrismaService, // para o register
+    private prisma: PrismaService,
   ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOneByEmail(email);
+    const user = await this.usersService.findOneByEmail(email)
     if (user && (await bcrypt.compare(pass, user.password))) {
-      // Remove o campo password do retorno
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...result } = user;
-      return result;
+      const { password, ...result } = user
+      return result
     }
-    return null;
+    return null
   }
 
   async login(user: any) {
-    const payload = { email: user.email, sub: user.id };
+    const payload = { email: user.email, sub: user.id }
+
     return {
       access_token: this.jwtService.sign(payload),
-    };
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
+    }
   }
 
-  async register(data: { email: string; password: string }) {
+  async register(data: { email: string; password: string; name: string }) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const user = await this.prisma.user.create({
       data: {
         email: data.email,
         password: hashedPassword,
-        name: data.email,
+        name: data.name
       },
-    });
-    return user;
+    })
+    return user
   }
 }
