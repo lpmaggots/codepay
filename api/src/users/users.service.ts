@@ -1,23 +1,30 @@
-import { Injectable } from '@nestjs/common'
-import { PrismaService } from '@/prisma/prisma.service'
-import { CreateUserDto } from './dto/create-user.dto'
-import { UpdateUserDto } from './dto/update-user.dto'
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@/prisma/prisma.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import * as bcrypt from 'bcrypt';
 
 interface FindAllQuery {
-  page?: number
-  limit?: number
+  page?: number;
+  limit?: number;
 }
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  create(data: CreateUserDto) {
-    return this.prisma.user.create({ data })
+  async create(data: CreateUserDto) {
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    return this.prisma.user.create({
+      data: {
+        ...data,
+        password: hashedPassword,
+      },
+    });
   }
 
   async findAll(query: FindAllQuery) {
-    const { page = 1, limit = 10 } = query
+    const { page = 1, limit = 10 } = query;
 
     const [users, total] = await Promise.all([
       this.prisma.user.findMany({
@@ -26,7 +33,7 @@ export class UsersService {
         include: { accounts: true },
       }),
       this.prisma.user.count(),
-    ])
+    ]);
 
     return {
       data: users,
@@ -35,24 +42,30 @@ export class UsersService {
         page,
         lastPage: Math.ceil(total / limit),
       },
-    }
+    };
   }
 
   findOne(id: string) {
     return this.prisma.user.findUnique({
       where: { id },
       include: { accounts: true },
-    })
+    });
+  }
+
+  findOneByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email },
+    });
   }
 
   update(id: string, data: UpdateUserDto) {
     return this.prisma.user.update({
       where: { id },
       data,
-    })
+    });
   }
 
   remove(id: string) {
-    return this.prisma.user.delete({ where: { id } })
+    return this.prisma.user.delete({ where: { id } });
   }
 }

@@ -1,21 +1,39 @@
-import { Controller, Post, Body, UsePipes, ValidationPipe } from '@nestjs/common'
-import { AuthService } from './auth.service'
-import { RegisterDto } from './dto/register.dto'
-import { LoginDto } from './dto/login.dto'
+import {
+  Controller,
+  Post,
+  Body,
+  UsePipes,
+  ValidationPipe,
+  UseGuards,
+  Request,
+  HttpCode,
+} from '@nestjs/common';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
+import { AuthService } from './auth.service';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { Public } from './decorators/public.decorator';
+
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('register')
   @UsePipes(new ValidationPipe())
-  register(@Body() body: RegisterDto) {
-    return this.authService.register(body)
+  async register(@Body() body: RegisterDto) {
+    return this.authService.register(body);
   }
 
+  @ApiBody({ type: LoginDto })
+  @Public()
+  @UseGuards(LocalAuthGuard)
   @Post('login')
-  @UsePipes(new ValidationPipe())
-  login(@Body() body: LoginDto) {
-    return this.authService.login(body)
+  @HttpCode(200)
+  async login(@Request() req) {
+    return this.authService.login(req.user);
   }
 }

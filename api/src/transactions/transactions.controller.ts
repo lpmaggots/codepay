@@ -17,7 +17,7 @@ import { CreateTransactionDto } from './dto/create-transaction.dto'
 import { UpdateTransactionDto } from './dto/update-transaction.dto'
 import { TransactionsFilterDto } from './dto/transactions-filter.dto'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { JwtAuthGuard } from '@/src/auth/jwt/jwt-auth.guard'
+import { JwtAuthGuard } from '@/src/auth/guards/jwt-auth.guard'
 
 @ApiTags('transactions')
 @ApiBearerAuth()

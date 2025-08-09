@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '@/prisma/prisma.service'
 import { CreateAccountDto } from './dto/create-account.dto'
 import { UpdateAccountDto } from './dto/update-account.dto'
@@ -7,11 +7,18 @@ import { UpdateAccountDto } from './dto/update-account.dto'
 export class AccountsService {
   constructor(private prisma: PrismaService) {}
 
-  create(data: CreateAccountDto) {
-    return this.prisma.account.create({ data })
+  create(userId: string, data: CreateAccountDto) {
+    return this.prisma.account.create({
+      data: {
+        ...data,
+        userId,
+      },
+    })
   }
 
-  async findAll(query: {
+  async findAll(
+    userId: string,
+    query: {
     page?: number | string
     limit?: number | string
     orderBy?: string
@@ -22,7 +29,7 @@ export class AccountsService {
     const orderBy = query.orderBy || 'createdAt'
     const institutionId = query.institutionId
 
-    const where = institutionId ? { institutionId } : {}
+    const where = { userId, ...(institutionId && { institutionId }) }
 
     const [accounts, total] = await Promise.all([
       this.prisma.account.findMany({
@@ -45,18 +52,27 @@ export class AccountsService {
     }
   }
 
-  findOne(id: string) {
-    return this.prisma.account.findUnique({
-      where: { id },
+  async findOne(id: string, userId: string) {
+    const account = await this.prisma.account.findUnique({
+      where: { id, userId },
       include: { institution: true },
     })
+    if (!account) {
+      throw new NotFoundException(`Account with ID ${id} not found`)
+    }
+    return account
   }
 
-  update(id: string, data: UpdateAccountDto) {
+  async update(id: string, userId: string, data: UpdateAccountDto) {
+    // Garante que o usuário só pode atualizar a própria conta
+    await this.findOne(id, userId)
     return this.prisma.account.update({ where: { id }, data })
   }
 
-  remove(id: string) {
-    return this.prisma.account.delete({ where: { id } })
+  async remove(id: string, userId: string) {
+    // Garante que o usuário só pode remover a própria conta
+    await this.findOne(id, userId)
+    await this.prisma.account.delete({ where: { id } })
+    return { message: `Account with ID ${id} successfully removed.` }
   }
 }

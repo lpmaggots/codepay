@@ -7,45 +7,52 @@ import {
   Delete,
   Put,
   Query,
+  Request,
 } from '@nestjs/common'
 import { AccountsService } from './accounts.service'
 import { CreateAccountDto } from './dto/create-account.dto'
 import { UpdateAccountDto } from './dto/update-account.dto'
 import { AccountsFilterDto } from './dto/accounts-filter.dto'
-import { ApiTags, ApiOperation } from '@nestjs/swagger'
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger'
 
 @ApiTags('accounts')
+@ApiBearerAuth() // Indica que as rotas precisam de token
 @Controller('accounts')
 export class AccountsController {
   constructor(private readonly service: AccountsService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new account' })
-  create(@Body() dto: CreateAccountDto) {
-    return this.service.create(dto)
+  create(@Request() req, @Body() dto: CreateAccountDto) {
+    const userId = req.user.id; // Pega o ID do usuário do token
+    return this.service.create(userId, dto)
   }
 
   @Get()
   @ApiOperation({ summary: 'List accounts with pagination and filters' })
-  findAll(@Query() filters: AccountsFilterDto) {
-    return this.service.findAll(filters)
+  findAll(@Request() req, @Query() filters: AccountsFilterDto) {
+    const userId = req.user.id;
+    return this.service.findAll(userId, filters)
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get account by ID' })
-  findOne(@Param('id') id: string) {
-    return this.service.findOne(id)
+  findOne(@Request() req, @Param('id') id: string) {
+    const userId = req.user.id;
+    return this.service.findOne(id, userId)
   }
 
   @Put(':id')
   @ApiOperation({ summary: 'Update account by ID' })
-  update(@Param('id') id: string, @Body() dto: UpdateAccountDto) {
-    return this.service.update(id, dto)
+  update(@Request() req, @Param('id') id: string, @Body() dto: UpdateAccountDto) {
+    const userId = req.user.id;
+    return this.service.update(id, userId, dto)
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete account by ID' })
-  remove(@Param('id') id: string) {
-    return this.service.remove(id)
+  remove(@Request() req, @Param('id') id: string) {
+    const userId = req.user.id;
+    return this.service.remove(id, userId)
   }
 }
