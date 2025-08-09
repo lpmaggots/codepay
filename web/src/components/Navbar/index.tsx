@@ -6,6 +6,7 @@ import Logo from '@/assets/images/codepay-logo.png'
 import { FiLogIn, FiLogOut, FiUser, FiMenu, FiX } from 'react-icons/fi'
 
 import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 import Button from '@/shared/Button'
 
@@ -26,6 +27,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout()
+    toast.success('Logout realizado. Até breve! =)')
     router.push('/')
   }
 
