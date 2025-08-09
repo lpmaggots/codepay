@@ -67,30 +67,38 @@ export default function Navbar() {
           }
           {
             user ? (
-              <Button
-                onClick={handleLogout}
-                variant="secondary"
-              >
-                Sair
-                <FiLogOut className="inline ml-2" />
-              </Button>
+              <>
+                <span className="text-gray-500 font-medium pl-5 ">
+                  <FiUser className="inline mb-1 mr-1" />
+                  {user.name}
+                </span>
+                <Button
+                  onClick={handleLogout}
+                  variant="secondary"
+                >
+                  Sair
+                  <FiLogOut className="inline ml-2" />
+                </Button>
+              </>
             ) : (
-              <Link
-                href="/login"
-                className="w-full bg-purple-700 text-white py-2 px-4 rounded hover:bg-purple-800 transition flex items-center justify-center cursor-pointer"
-              >
-                Login
-                <FiLogIn className="inline ml-2" />
-              </Link>
+              <>
+                <Link
+                  href="/login"
+                  className="w-full bg-purple-700 text-white py-2 px-4 rounded hover:bg-purple-800 transition flex items-center justify-center cursor-pointer"
+                >
+                  Login
+                  <FiLogIn className="inline ml-2" />
+                </Link>
+                <Link
+                  href="/register"
+                  className="min-w-[145px] bg-emerald-500 text-white py-2 px-4 rounded hover:bg-emerald-600 transition cursor-pointer"
+                >
+                  Cadastre-se
+                  <FiUser className="inline ml-2" />
+                </Link>
+              </>
             )
           }
-          <Link
-            href="/register"
-            className="min-w-[145px] bg-emerald-500 text-white py-2 px-4 rounded hover:bg-emerald-600 transition cursor-pointer"
-          >
-            Cadastre-se
-            <FiUser className="inline ml-2" />
-          </Link>
         </div>
       </div>
 
@@ -112,30 +120,40 @@ export default function Navbar() {
           }
           {
             user ? (
-              <Button
-                onClick={handleLogout}
-                variant="secondary"
-              >
-                Sair
-                <FiLogOut className="inline ml-2" />
-              </Button>
+              <>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-500 font-medium pl-3">
+                    <FiUser className="inline mb-1 mr-1" />
+                    {user.name}
+                  </span>
+                  <Button
+                    onClick={handleLogout}
+                    variant="secondary"
+                  >
+                    Sair
+                    <FiLogOut className="inline ml-2" />
+                  </Button>
+                </div>
+              </>
             ) : (
-              <Link
-                href="/login"
-                className="w-full bg-purple-700 text-white py-2 px-4 rounded hover:bg-purple-800 transition flex items-center justify-center cursor-pointer"
-              >
-                Login
-                <FiLogIn className="inline ml-2" />
-              </Link>
+              <>
+                <Link
+                  href="/login"
+                  className="w-full bg-purple-700 text-white py-2 px-4 rounded hover:bg-purple-800 transition flex items-center justify-center cursor-pointer"
+                >
+                  Login
+                  <FiLogIn className="inline ml-2" />
+                </Link>
+                <Link
+                  href="/register"
+                  className="block w-full text-center bg-emerald-500 text-white py-2 px-4 rounded hover:bg-emerald-600 transition cursor-pointer"
+                >
+                  Cadastre-se
+                  <FiUser className="inline ml-2" />
+                </Link>
+              </>
             )
           }
-          <Link
-            href="/register"
-            className="block w-full text-center bg-emerald-500 text-white py-2 px-4 rounded hover:bg-emerald-600 transition cursor-pointer"
-          >
-            Cadastre-se
-            <FiUser className="inline ml-2" />
-          </Link>
         </div>
       )}
     </nav>
