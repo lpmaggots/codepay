@@ -1,58 +1,75 @@
 import { PrismaClient } from '@prisma/client'
-import { hash } from 'bcrypt'
 
 const prisma = new PrismaClient()
 
 async function main() {
-  const password = await hash('123456', 10)
-  const user = await prisma.user.create({
-    data: {
-      name: 'Felipe Falcone',
-      email: 'felipe@example.com',
-      password,
-    },
-  })
+  // =======================
+  // InstitutionType
+  // =======================
+  const institutionTypes = [
+    { description: 'Banco' },
+    { description: 'Cooperativa de Crédito' },
+    { description: 'Corretora de Investimentos' }
+  ]
 
-  const institution = await prisma.institution.create({
-    data: {
-      name: 'Banco CodePay',
-      code: 'CODEPAY001',
-      ispb: '123213',
-    },
-  })
+  for (const type of institutionTypes) {
+    await prisma.institutionType.create({
+      data: type,
+    })
+  }
 
-  const account = await prisma.account.create({
-    data: {
-      number: '000123',
-      type: 'CHECKING',
-      balance: 1000,
-      userId: user.id,
-      institutionId: institution.id,
-    },
-  })
+  // =======================
+  // AccountType
+  // =======================
+  const accountTypes = [
+    { description: 'Conta Corrente' },
+    { description: 'Conta Poupança' },
+    { description: 'Cartão de Crédito' },
+    { description: 'Investimento' },
+    { description: 'Dinheiro Físico' }
+  ]
 
-  await prisma.transaction.createMany({
-    data: [
-      {
-        type: 'CREDIT',
-        amount: 500,
-        description: 'Depósito inicial',
-        accountId: account.id,
-      },
-      {
-        type: 'DEBIT',
-        amount: 100,
-        description: 'Pagamento de conta',
-        accountId: account.id,
-      },
-    ],
-  })
+  for (const type of accountTypes) {
+    await prisma.accountType.create({
+      data: type,
+    })
+  }
+
+  // =======================
+  // TransactionType
+  // =======================
+  const transactionTypes = [
+    { description: 'Receita' },
+    { description: 'Despesa' },
+  ]
+
+  for (const type of transactionTypes) {
+    await prisma.transactionType.create({
+      data: type,
+    })
+  }
+
+  // =======================
+  // TransactionCategory
+  // =======================
+  const transactionCategories = [
+    { description: 'Alimentação' },
+    { description: 'Transporte' },
+    { description: 'Moradia' },
+    { description: 'Salário' },
+    { description: 'Investimento' },
+  ]
+
+  for (const category of transactionCategories) {
+    await prisma.transactionCategory.create({
+      data: category,
+    })
+  }
+
+  console.log('✅ Seed concluído com sucesso!')
 }
 
 main()
-  .then(() => {
-    console.log('🌱 Seed executado com sucesso!')
-  })
   .catch((e) => {
     console.error(e)
     process.exit(1)
