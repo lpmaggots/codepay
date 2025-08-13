@@ -41,7 +41,7 @@ export class InstitutionsService implements OnModuleInit {
         data: {
           name: bank.name,
           code: String(bank.code),
-          logo: bank.ispb ?? bank.fullName ?? 'sem-logo',
+          ispb: bank.ispb ?? '',
         },
       })
     }

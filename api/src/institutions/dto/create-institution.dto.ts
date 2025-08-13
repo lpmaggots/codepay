@@ -21,5 +21,5 @@ export class CreateInstitutionDto {
     example: 'https://exemplo.com/logo.png',
   })
   @IsNotEmpty()
-  logo: string
+  ispb: string
 }

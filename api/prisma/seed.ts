@@ -17,7 +17,7 @@ async function main() {
     data: {
       name: 'Banco CodePay',
       code: 'CODEPAY001',
-      logo: 'https://example.com/logo.png',
+      ispb: '123213',
     },
   })
 
