@@ -5,7 +5,6 @@ import 'react-toastify/dist/ReactToastify.css'
 
 import { Theme } from '@/providers/Theme'
 import { AuthProvider } from '@/providers/AuthContext'
-
 import Navbar from '@/components/Navbar'
 
 export const metadata: Metadata = {

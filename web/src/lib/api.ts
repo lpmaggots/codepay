@@ -7,10 +7,17 @@ export const api = axios.create({
   }
 })
 
+const getCookie = (name: string) => {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop()?.split(';').shift()
+  return undefined
+}
+
 api.interceptors.request.use((config) => {
-  if(typeof window !== 'undefined') {
-    const token = localStorage.getItem('token')
-    if(token) {
+  if (typeof window !== 'undefined') {
+    const token = getCookie('token')
+    if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
   }
