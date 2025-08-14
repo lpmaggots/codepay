@@ -10,11 +10,11 @@ export class CreateAccountDto {
   number: string;
 
   @ApiProperty({
-    description: 'Tipo da conta',
-    example: 'corrente',
+    description: 'ID do tipo de conta',
+    example: '550e8400-e29b-41d4-a716-446655440010',
   })
-  @IsString()
-  type: string;
+  @IsUUID()
+  typeId: string;
 
   @ApiProperty({
     description: 'Saldo da conta',

@@ -10,8 +10,11 @@ export class AccountsService {
   create(userId: string, data: CreateAccountDto) {
     return this.prisma.account.create({
       data: {
-        ...data,
-        userId,
+        number: data.number,
+        balance: data.balance,
+        user: { connect: { id: userId } },
+        institution: { connect: { id: data.institutionId } },
+        type: { connect: { id: data.typeId } },
       },
     })
   }
@@ -19,11 +22,12 @@ export class AccountsService {
   async findAll(
     userId: string,
     query: {
-    page?: number | string
-    limit?: number | string
-    orderBy?: string
-    institutionId?: string
-  }) {
+      page?: number | string
+      limit?: number | string
+      orderBy?: string
+      institutionId?: string
+    }
+  ) {
     const page = Math.max(1, Number(query.page) || 1)
     const limit = Math.max(1, Number(query.limit) || 10)
     const orderBy = query.orderBy || 'createdAt'
@@ -37,7 +41,7 @@ export class AccountsService {
         skip: (page - 1) * limit,
         take: limit,
         orderBy: { [orderBy]: 'desc' },
-        include: { institution: true },
+        include: { institution: true, type: true },
       }),
       this.prisma.account.count({ where }),
     ])
@@ -55,7 +59,7 @@ export class AccountsService {
   async findOne(id: string, userId: string) {
     const account = await this.prisma.account.findUnique({
       where: { id, userId },
-      include: { institution: true },
+      include: { institution: true, type: true },
     })
     if (!account) {
       throw new NotFoundException(`Account with ID ${id} not found`)
@@ -64,13 +68,20 @@ export class AccountsService {
   }
 
   async update(id: string, userId: string, data: UpdateAccountDto) {
-    // Garante que o usuário só pode atualizar a própria conta
     await this.findOne(id, userId)
-    return this.prisma.account.update({ where: { id }, data })
+
+    return this.prisma.account.update({
+      where: { id },
+      data: {
+        ...(data.number && { number: data.number }),
+        ...(data.balance !== undefined && { balance: data.balance }),
+        ...(data.institutionId && { institution: { connect: { id: data.institutionId } } }),
+        ...(data.typeId && { type: { connect: { id: data.typeId } } }),
+      },
+    })
   }
 
   async remove(id: string, userId: string) {
-    // Garante que o usuário só pode remover a própria conta
     await this.findOne(id, userId)
     await this.prisma.account.delete({ where: { id } })
     return { message: `Account with ID ${id} successfully removed.` }

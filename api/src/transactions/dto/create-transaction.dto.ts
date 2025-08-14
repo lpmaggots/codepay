@@ -1,15 +1,13 @@
-import { IsIn, IsNotEmpty, IsNumber, IsUUID } from 'class-validator'
+import { IsNotEmpty, IsNumber, IsUUID } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
 
 export class CreateTransactionDto {
   @ApiProperty({
-    description: 'Tipo da transação',
-    example: 'CREDIT',
-    enum: ['CREDIT', 'DEBIT'],
+    description: 'ID do tipo da transação',
+    example: '550e8400-e29b-41d4-a716-446655440050',
   })
-  @IsNotEmpty()
-  @IsIn(['CREDIT', 'DEBIT'])
-  type: 'CREDIT' | 'DEBIT';
+  @IsUUID()
+  typeId: string;
 
   @ApiProperty({
     description: 'Valor da transação',
@@ -31,4 +29,11 @@ export class CreateTransactionDto {
   })
   @IsUUID()
   accountId: string
+
+  @ApiProperty({
+    description: 'ID da categoria da transação',
+    example: '550e8400-e29b-41d4-a716-446655440060',
+  })
+  @IsUUID()
+  categoryId: string
 }

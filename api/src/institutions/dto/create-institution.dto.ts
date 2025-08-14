@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator'
+import { IsNotEmpty, IsUUID } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
 
 export class CreateInstitutionDto {
@@ -17,9 +17,16 @@ export class CreateInstitutionDto {
   code: string
 
   @ApiProperty({
-    description: 'URL do logo da instituição',
-    example: 'https://exemplo.com/logo.png',
+    description: 'ISPB da instituição',
+    example: '12345678',
   })
   @IsNotEmpty()
   ispb: string
+
+  @ApiProperty({
+    description: 'ID do tipo de instituição',
+    example: '550e8400-e29b-41d4-a716-446655440099',
+  })
+  @IsUUID()
+  typeId: string
 }

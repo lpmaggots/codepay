@@ -6,7 +6,7 @@ import { BankApiService } from './bank-api.service'
 
 @Injectable()
 export class InstitutionsService implements OnModuleInit {
-  private readonly logger = new Logger(InstitutionsService.name)
+  private readonly logger = new Logger(InstitutionsService.name);
 
   constructor(
     private prisma: PrismaService,
@@ -27,21 +27,30 @@ export class InstitutionsService implements OnModuleInit {
   }
 
   async seedInstitutions() {
-    const banks = await this.bankApiService.getBanks() as Array<{
+    const bankType = await this.prisma.institutionType.findFirst({
+      where: { description: 'Banco' },
+    })
+
+    if (!bankType) {
+      throw new Error('InstitutionType "Banco" not found. Seed InstitutionType first.')
+    }
+
+    const banks = (await this.bankApiService.getBanks()) as Array<{
       name: string
       code: string | number | null | undefined
       ispb?: string
       fullName?: string
-    }>;
+    }>
 
     for (const bank of banks) {
-      if (!bank.name || bank.code === null || bank.code === undefined) continue
+      if (!bank.name || bank.code === null || bank.code === undefined) continue;
 
       await this.prisma.institution.create({
         data: {
           name: bank.name,
           code: String(bank.code),
           ispb: bank.ispb ?? '',
+          typeId: bankType.id,
         },
       })
     }
@@ -59,18 +68,20 @@ export class InstitutionsService implements OnModuleInit {
     code?: string
   }) {
     const { page = 1, limit = 10, orderBy = 'createdAt', name, code } = query
-    const where: any = {};
- 
+    const where: any = {}
+
     if (name) {
       where.name = {
-        contains: name.toLowerCase(),
-      }
+        contains: name,
+        mode: 'insensitive',
+      };
     }
 
     if (code) {
       where.code = {
-        contains: code.toLowerCase(),
-      }
+        contains: code,
+        mode: 'insensitive',
+      };
     }
 
     const [institutions, total] = await Promise.all([

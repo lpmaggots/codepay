@@ -13,7 +13,8 @@ interface FindAllQuery {
   limit?: number
   startDate?: string
   endDate?: string
-  type?: string
+  typeId?: string
+  categoryId?: string
 }
 
 @Injectable()
@@ -21,11 +22,11 @@ export class TransactionsService {
   constructor(private prisma: PrismaService) {}
 
   async create(userId: string, dto: CreateTransactionDto) {
-    const { amount, accountId, type, description } = dto
+    const { amount, accountId, typeId, description, categoryId } = dto;
 
     const account = await this.prisma.account.findUnique({
       where: { id: accountId },
-    })
+    });
 
     if (!account) {
       throw new NotFoundException('Account not found')
@@ -39,12 +40,25 @@ export class TransactionsService {
       throw new ForbiddenException('Transaction amount must be positive')
     }
 
-    if (type === 'DEBIT' && account.balance < amount) {
+    const transactionType = await this.prisma.transactionType.findUnique({
+      where: { id: typeId },
+    })
+
+    if (!transactionType) {
+      throw new NotFoundException(`Transaction type with ID "${typeId}" not found`)
+    }
+
+    if (
+      transactionType.description.toUpperCase() === 'DEBIT' &&
+      account.balance < amount
+    ) {
       throw new ForbiddenException('Insufficient balance')
     }
 
     const updatedBalance =
-      type === 'DEBIT' ? account.balance - amount : account.balance + amount
+      transactionType.description.toUpperCase() === 'DEBIT'
+        ? account.balance - amount
+        : account.balance + amount
 
     await this.prisma.account.update({
       where: { id: accountId },
@@ -54,7 +68,8 @@ export class TransactionsService {
     return this.prisma.transaction.create({
       data: {
         amount,
-        type,
+        typeId,
+        categoryId: categoryId ?? null,
         description,
         accountId,
       },
@@ -68,7 +83,8 @@ export class TransactionsService {
       limit = 10,
       startDate,
       endDate,
-      type,
+      typeId,
+      categoryId,
     } = query
 
     const filters: any = {
@@ -77,17 +93,21 @@ export class TransactionsService {
       },
     }
 
-    if (type) {
-      filters.type = type.toUpperCase()
+    if (typeId) {
+      filters.typeId = typeId;
+    }
+
+    if (categoryId) {
+      filters.categoryId = categoryId;
     }
 
     if (startDate || endDate) {
-      filters.date = {}
+      filters.date = {};
       if (startDate) {
-        filters.date.gte = new Date(startDate)
+        filters.date.gte = new Date(startDate);
       }
       if (endDate) {
-        filters.date.lte = new Date(endDate)
+        filters.date.lte = new Date(endDate);
       }
     }
 
@@ -97,7 +117,11 @@ export class TransactionsService {
         skip: (page - 1) * limit,
         take: limit,
         orderBy: { date: 'desc' },
-        include: { account: true },
+        include: {
+          account: true,
+          type: true,
+          category: true,
+        },
       }),
       this.prisma.transaction.count({ where: filters }),
     ])
@@ -115,18 +139,21 @@ export class TransactionsService {
   async findOne(userId: string, id: string) {
     const transaction = await this.prisma.transaction.findUnique({
       where: { id },
-      include: { account: true },
+      include: { account: true, type: true, category: true },
     })
 
     if (!transaction || transaction.account.userId !== userId) {
       throw new ForbiddenException('Transaction not found or not authorized')
     }
 
-    return transaction
+    return transaction;
   }
 
   update(id: string, data: UpdateTransactionDto) {
-    return this.prisma.transaction.update({ where: { id }, data })
+    return this.prisma.transaction.update({
+      where: { id },
+      data,
+    })
   }
 
   remove(id: string) {
