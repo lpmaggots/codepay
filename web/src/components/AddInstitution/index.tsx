@@ -8,8 +8,8 @@ import Input from '@/shared/Input'
 import Select from '@/shared/Select'
 import Button from '@/shared/Button'
 
-import { api, useForm, zodResolver, toast } from '@/hooks/useImportOnForm'
-import { fetcher } from '@/lib/fetcher'
+import { api, useForm, zodResolver, toast } from '@/utils/useImportOnForm'
+import { fetcher } from '@/utils/fetcher'
 
 import { InstitutionSchema, institutionSchema } from '@/schemas/institutionSchema'
 import { InstitutionTypes } from '@/types/Institution'
