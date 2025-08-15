@@ -15,6 +15,7 @@ import { InstitutionSchema, institutionSchema } from '@/schemas/institutionSchem
 import { InstitutionTypes } from '@/types/Institution'
 
 const url = {
+  institutions: 'institutions',
   types: 'institution-types'
 }
 
@@ -35,7 +36,15 @@ export default function AddInstitution() {
   }
 
   const onSubmit = async (data: InstitutionSchema) => {
-    console.log('Instituição adicionada!')
+    try {
+      await api.post(url.institutions, data)
+      reset()
+      handleCloseModal()
+      toast.success('Instituição adicionada com sucesso!')
+    } catch (error) {
+      console.log(error)
+      toast.error('Erro ao adicionar instituição')
+    }
   }
 
   return (
