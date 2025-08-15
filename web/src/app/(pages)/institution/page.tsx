@@ -29,7 +29,7 @@ export default async function Institution() {
         <section className="mb-8">
           <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <Input
+              {/* <Input
                 type="text"
                 name="filterName"
                 label="Nome"
@@ -49,7 +49,7 @@ export default async function Institution() {
                   { value: 'Banco', label: 'Banco' },
                   { value: 'Financeira', label: 'Financeira' },
                 ]}
-              />
+              /> */}
             </div>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">

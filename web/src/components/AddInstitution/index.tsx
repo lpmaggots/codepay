@@ -1,13 +1,30 @@
 'use client'
 
 import { useState } from 'react'
+import useSWR from 'swr'
+
 import Modal from '@/shared/Modal'
 import Input from '@/shared/Input'
 import Select from '@/shared/Select'
 import Button from '@/shared/Button'
 
+import { api, useForm, zodResolver, toast } from '@/hooks/useImportOnForm'
+import { fetcher } from '@/lib/fetcher'
+
+import { InstitutionSchema, institutionSchema } from '@/schemas/institutionSchema'
+import { InstitutionTypes } from '@/types/Institution'
+
+const url = {
+  types: 'institution-types'
+}
+
 export default function AddInstitution() {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const { data: types, mutate } = useSWR<InstitutionTypes[]>(url.types, fetcher)
+
+  const { register, handleSubmit, formState: { errors, isSubmitting  }, reset } = useForm<InstitutionSchema>({
+    resolver: zodResolver(institutionSchema)
+  })
 
   const handleOpenModal = () => {
     setIsModalOpen(true)
@@ -17,10 +34,8 @@ export default function AddInstitution() {
     setIsModalOpen(false)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const onSubmit = async (data: InstitutionSchema) => {
     console.log('Instituição adicionada!')
-    handleCloseModal()
   }
 
   return (
@@ -30,28 +45,51 @@ export default function AddInstitution() {
       </Button>
 
       <Modal isOpen={isModalOpen} onClose={handleCloseModal} title="Adicionar Nova Instituição">
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
             type="text"
             name="name"
             label="Nome da Instituição"
             placeholder="Ex: Banco do Brasil"
+            register={register}
+            error={errors.name?.message}
           />
           <Select
-            name="type"
+            name="typeId"
             label="Tipo de Instituição"
-            options={[
-              { value: 'bank', label: 'Banco' },
-              { value: 'credit_union', label: 'Cooperativa de Crédito' },
-              { value: 'brokerage', label: 'Corretora de Investimentos' },
-              { value: 'other', label: 'Outro' },
-            ]}
+            addItem
+            itemData={{
+              title: 'Adicionar Novo Tipo',
+              api_url: url.types,
+              onAdd: async () => { await mutate() }
+            }}
+            options={types || []}
+            register={register}
+            error={errors.typeId?.message}
+          />
+          <Input
+            type="number"
+            name="ispb"
+            label="ISPB"
+            placeholder="Ex: 00000000"
+            register={register}
+            error={errors.ispb?.message}
+          />
+          <Input
+            type="number"
+            name="code"
+            label="Código"
+            placeholder="Ex: 001"
+            register={register}
+            error={errors.code?.message}
           />
           <Input
             type="text"
             name="website"
             label="Website (Opcional)"
             placeholder="Ex: www.bancodobrasil.com.br"
+            register={register}
+            error={errors.website?.message}
           />
           <div className="flex justify-end gap-x-3">
             <Button variant="secondary" onClick={handleCloseModal}>
