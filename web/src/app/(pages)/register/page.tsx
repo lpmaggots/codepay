@@ -6,12 +6,10 @@ import Input from '@/shared/Input'
 import Button from '@/shared/Button'
 import BackToHome from '@/components/BackToHome'
 
-import { api } from '@/lib/api'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { api, useForm, zodResolver, toast } from '@/utils/useImportOnForm'
 import { RegisterSchema, registerSchema } from '@/schemas/registerSchema'
-import { toast } from 'react-toastify'
 
+import { API_ROUTES } from '@/constants/apiRoutes'
 
 export default function Register() {
   const { register, handleSubmit, formState: { errors, isSubmitting  }, reset } = useForm<RegisterSchema>({
@@ -20,7 +18,7 @@ export default function Register() {
 
   const onSubmit = async (data: RegisterSchema) => {
     try {
-      await api.post('auth/register', data)
+      await api.post(API_ROUTES.USERS.base, data)
       reset()
       toast.success('Cadastro realizado!!')
     } catch (error: any) {

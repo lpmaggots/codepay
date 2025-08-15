@@ -14,14 +14,11 @@ import { fetcher } from '@/utils/fetcher'
 import { InstitutionSchema, institutionSchema } from '@/schemas/institutionSchema'
 import { InstitutionTypes } from '@/types/Institution'
 
-const url = {
-  institutions: 'institutions',
-  types: 'institution-types'
-}
+import { API_ROUTES } from '@/constants/apiRoutes'
 
 export default function AddInstitution() {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const { data: types, mutate } = useSWR<InstitutionTypes[]>(url.types, fetcher)
+  const { data: types, mutate } = useSWR<InstitutionTypes[]>(API_ROUTES.INSTITUTION_TYPES.base, fetcher)
 
   const { register, handleSubmit, formState: { errors, isSubmitting  }, reset } = useForm<InstitutionSchema>({
     resolver: zodResolver(institutionSchema)
@@ -37,7 +34,7 @@ export default function AddInstitution() {
 
   const onSubmit = async (data: InstitutionSchema) => {
     try {
-      await api.post(url.institutions, data)
+      await api.post(API_ROUTES.INSTITUTIONS.base, data)
       reset()
       handleCloseModal()
       toast.success('Instituição adicionada com sucesso!')
@@ -69,7 +66,7 @@ export default function AddInstitution() {
             addItem
             itemData={{
               title: 'Adicionar Novo Tipo',
-              api_url: url.types,
+              api_url: API_ROUTES.INSTITUTION_TYPES.base,
               onAdd: async () => { await mutate() }
             }}
             options={types || []}

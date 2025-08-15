@@ -1,19 +1,19 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+
 import Container from '@/shared/Container'
 import Card from '@/shared/Card'
 import Input from '@/shared/Input'
 import Button from '@/shared/Button'
 import BackToHome from '@/components/BackToHome'
 
-import { useRouter } from 'next/navigation'
 
-import { api } from '@/lib/api'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { api, useForm, zodResolver, toast } from '@/utils/useImportOnForm'
 import { LoginSchema, loginSchema } from '@/schemas/loginSchema'
-import { toast } from 'react-toastify'
+
 import { useAuth } from '@/providers/AuthContext'
+import { API_ROUTES } from '@/constants/apiRoutes'
 
 export default function Login() {
   const router = useRouter()
@@ -25,7 +25,7 @@ export default function Login() {
 
   const onSubmit = async (data: LoginSchema) => {
     try {
-      const response = await api.post('auth/login', data)
+      const response = await api.post(API_ROUTES.AUTH.login, data)
       if (response) {
         const { access_token, user } = response.data
         login(access_token, user)
