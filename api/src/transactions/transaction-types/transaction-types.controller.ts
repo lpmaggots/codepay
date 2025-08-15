@@ -7,9 +7,7 @@ import {
   Delete,
   Put,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common'
-import { CacheInterceptor } from '@nestjs/cache-manager'
 import { TransactionTypesService } from './transaction-types.service'
 import { CreateTransactionTypeDto } from './dto/create-transaction-type.dto'
 import { UpdateTransactionTypeDto } from './dto/update-transaction-type.dto'
@@ -19,7 +17,6 @@ import { JwtAuthGuard } from '@/src/auth/guards/jwt-auth.guard'
 @ApiTags('transaction-types')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@UseInterceptors(CacheInterceptor)
 @Controller('transaction-types')
 export class TransactionTypesController {
   constructor(private readonly service: TransactionTypesService) {}

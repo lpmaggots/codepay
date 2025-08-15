@@ -6,10 +6,8 @@ import {
   Param,
   Delete,
   Put,
-  UseGuards,
-  UseInterceptors,
+  UseGuards
 } from '@nestjs/common'
-import { CacheInterceptor } from '@nestjs/cache-manager'
 import { InstitutionTypesService } from './institution-types.service'
 import { CreateInstitutionTypeDto } from './dto/create-institution-type.dto'
 import { UpdateInstitutionTypeDto } from './dto/update-institution-type.dto'
@@ -19,7 +17,6 @@ import { JwtAuthGuard } from '@/src/auth/guards/jwt-auth.guard'
 @ApiTags('institution-types')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@UseInterceptors(CacheInterceptor)
 @Controller('institution-types')
 export class InstitutionTypesController {
   constructor(private readonly service: InstitutionTypesService) {}
