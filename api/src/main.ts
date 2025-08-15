@@ -2,9 +2,12 @@ import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { ValidationPipe } from '@nestjs/common'
+import { setupSwagger } from './swagger.config'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
+  
+  setupSwagger(app)
 
   if (process.env.NODE_ENV === 'production') {
     app.enableCors({
