@@ -76,17 +76,17 @@ export default function AddAuxiliaryItem({ itemData }: AddAuxiliaryItemProps) {
           />
           <div className="flex justify-end gap-x-3">
             <Button
+              variant="secondary"
+              onClick={handleModalClose}
+            >
+              Cancelar
+            </Button>
+            <Button
               type="button"
               onClick={handleSubmit(onSubmit)}
               variant="primary"
             >
               Adicionar
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={handleModalClose}
-            >
-              Cancelar
             </Button>
           </div>
         </div>

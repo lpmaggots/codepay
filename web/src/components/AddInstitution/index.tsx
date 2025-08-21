@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import useSWR from 'swr'
 
 import Modal from '@/shared/Modal'
 import Input from '@/shared/Input'
@@ -9,16 +8,14 @@ import Select from '@/shared/Select'
 import Button from '@/shared/Button'
 
 import { api, useForm, zodResolver, toast } from '@/utils/useImportOnForm'
-import { fetcher } from '@/utils/fetcher'
-
 import { InstitutionSchema, institutionSchema } from '@/schemas/institutionSchema'
-import { InstitutionTypes } from '@/types/Institution'
 
 import { API_ROUTES } from '@/constants/apiRoutes'
+import { useInstitutionTypes } from '@/hooks/useInstitutionTypesSWR'
 
 export default function AddInstitution() {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const { data: types, mutate } = useSWR<InstitutionTypes[]>(API_ROUTES.INSTITUTION_TYPES.base, fetcher)
+  const { data: types, mutate } = useInstitutionTypes()
 
   const { register, handleSubmit, formState: { errors, isSubmitting  }, reset } = useForm<InstitutionSchema>({
     resolver: zodResolver(institutionSchema)
@@ -69,7 +66,12 @@ export default function AddInstitution() {
               api_url: API_ROUTES.INSTITUTION_TYPES.base,
               onAdd: async () => { await mutate() }
             }}
-            options={types || []}
+            options={
+              (types || []).map(type => ({
+                value: type.id,
+                description: type.description
+              }))
+            }
             register={register}
             error={errors.typeId?.message}
           />

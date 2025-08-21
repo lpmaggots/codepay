@@ -65,7 +65,12 @@ export default function Register() {
               register={register}
               error={errors.confirmPassword?.message}
             />
-            <Button type="submit" variant="primary" className={`w-full ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
+            <Button
+              type="submit"
+              variant="primary"
+              className="w-full"
+              disabled={isSubmitting}
+            >
               Cadastrar
             </Button>
           </form>

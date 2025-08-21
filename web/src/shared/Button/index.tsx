@@ -1,13 +1,15 @@
 import { ButtonHTMLAttributes } from 'react'
 import clsx from 'clsx'
 
+type ButtonVariant = 'primary' | 'secondary' | 'floating' | 'link'
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
-  variant?: 'primary' | 'secondary' | 'floating' | 'link',
+  variant?: ButtonVariant
+  disabled?: boolean
   className?: string
 }
 
-export default function Button({ children, variant = 'primary', className, ...props }: ButtonProps) {
+export default function Button({ children, variant = 'primary', disabled, className, ...props }: ButtonProps) {
   const baseClasses = 'focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer transition-all duration-300 ease-in-out'
 
   const variantClasses = {
@@ -19,7 +21,7 @@ export default function Button({ children, variant = 'primary', className, ...pr
 
   return (
     <button
-      className={clsx(baseClasses, className, variantClasses[variant])}
+      className={clsx(baseClasses, className, variantClasses[variant], disabled && 'opacity-50 pointer-events-none')}
       {...props}
     >
       {children}

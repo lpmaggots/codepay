@@ -61,7 +61,12 @@ export default function Login() {
               register={register}
               error={errors.password?.message}
             />
-            <Button type="submit" variant="primary" className={`w-full ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
+            <Button
+              type="submit"
+              variant="primary"
+              className="w-full"
+              disabled={isSubmitting}
+            >
               Entrar
             </Button>
           </form>

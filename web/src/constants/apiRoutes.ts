@@ -1,38 +1,38 @@
 export const API_ROUTES = {
   // MAIN
   AUTH: {
-    login: '/api/auth/login'
+    login: '/auth/login'
   },
   ACCOUNTS: {
-    base: '/api/accounts',
+    base: '/accounts',
     byId: (id: string) => `/api/accounts/${id}`
   },
   DASHBOARD: {
-    base: '/api/dashboard'
+    base: '/dashboard'
   },
   INSTITUTIONS: {
-    base: '/api/institutions',
+    base: '/institutions',
     byId: (id: string) => `/api/institutions/${id}`
   },
   TRANSACTIONS: {
-    base: '/api/transactions',
+    base: '/transactions',
     byId: (id: string) => `/api/transactions/${id}`
   },
   USERS: {
-    base: '/api/users',
+    base: '/users',
     byId: (id: string) => `/api/users/${id}`
   },
   // AUXILIARY
   ACCOUNT_TYPES: {
-    base: '/api/account-types'
+    base: '/account-types'
   },
   INSTITUTION_TYPES: {
-    base: '/api/institution-types'
+    base: '/institution-types'
   },
   TRANSACTION_TYPES: {
-    base: '/api/transaction-types'
+    base: '/transaction-types'
   },
   TRANSACTION_CATEGORIES: {
-    base: '/api/transaction-categories'
+    base: '/transaction-categories'
   }
 }

@@ -29,4 +29,10 @@ export class InstitutionsFilterDto {
   @IsOptional()
   @IsString()
   code?: string
+
+  @ApiPropertyOptional({ description: 'Tipo da instituição (ID)' })
+  @IsOptional()
+  @Type(() => String)
+  @IsString()
+  typeId?: string
 }

@@ -6,7 +6,7 @@ import { BankApiService } from './bank-api.service'
 
 @Injectable()
 export class InstitutionsService implements OnModuleInit {
-  private readonly logger = new Logger(InstitutionsService.name);
+  private readonly logger = new Logger(InstitutionsService.name)
 
   constructor(
     private prisma: PrismaService,
@@ -14,9 +14,7 @@ export class InstitutionsService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    this.logger.log('Checking if bank data needs to be seeded...')
     const count = await this.prisma.institution.count()
-
     if (count === 0) {
       this.logger.log('No banks found. Seeding data from the API...')
       await this.seedInstitutions()
@@ -30,10 +28,7 @@ export class InstitutionsService implements OnModuleInit {
     const bankType = await this.prisma.institutionType.findFirst({
       where: { description: 'Banco' },
     })
-
-    if (!bankType) {
-      throw new Error('InstitutionType "Banco" not found. Seed InstitutionType first.')
-    }
+    if (!bankType) throw new Error('InstitutionType "Banco" not found.')
 
     const banks = (await this.bankApiService.getBanks()) as Array<{
       name: string
@@ -43,15 +38,15 @@ export class InstitutionsService implements OnModuleInit {
     }>
 
     for (const bank of banks) {
-      if (!bank.name || bank.code === null || bank.code === undefined) continue;
-
+      if (!bank.name || bank.code == null) continue
       await this.prisma.institution.create({
         data: {
           name: bank.name,
           code: String(bank.code),
           ispb: bank.ispb ?? '',
-          typeId: bankType.id,
+          type: { connect: { id: bankType.id } },
         },
+        include: { type: true },
       })
     }
   }
@@ -61,27 +56,30 @@ export class InstitutionsService implements OnModuleInit {
   }
 
   async findAll(query: {
-    page?: number
-    limit?: number
+    page?: string | number
+    limit?: string | number
     orderBy?: string
     name?: string
     code?: string
+    typeId?: string
   }) {
-    const { page = 1, limit = 10, orderBy = 'createdAt', name, code } = query
+    const page = Number(query.page) || 1
+    const limit = Number(query.limit) || 10
+    const orderBy = query.orderBy || 'createdAt'
+    const { name, code, typeId } = query
+
     const where: any = {}
 
     if (name) {
-      where.name = {
-        contains: name,
-        mode: 'insensitive',
-      };
+      where.name = { contains: name }
     }
 
     if (code) {
-      where.code = {
-        contains: code,
-        mode: 'insensitive',
-      };
+      where.code = { contains: code }
+    }
+
+    if (typeId) {
+      where.typeId = typeId
     }
 
     const [institutions, total] = await Promise.all([
@@ -90,6 +88,7 @@ export class InstitutionsService implements OnModuleInit {
         skip: (page - 1) * limit,
         take: limit,
         orderBy: { [orderBy]: 'desc' },
+        include: { type: true },
       }),
       this.prisma.institution.count({ where }),
     ])
@@ -97,9 +96,12 @@ export class InstitutionsService implements OnModuleInit {
     return {
       data: institutions,
       meta: {
-        total,
-        page,
-        lastPage: Math.ceil(total / limit),
+        count: total,
+        currentPage: page,
+        perPage: limit,
+        pageCount: Math.ceil(total / limit),
+        nextPage: page < Math.ceil(total / limit) ? page + 1 : null,
+        prevPage: page > 1 ? page - 1 : null,
       },
     }
   }

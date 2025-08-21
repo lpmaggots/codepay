@@ -1,8 +1,8 @@
-import { User } from '@/types/User'
+import { UserType } from '@/types/UserType'
 
 export type AuthContextType = {
-  user: User | null
+  user: UserType | null
   token: string | null
-  login: (token: string, user: User) => void
+  login: (token: string, user: UserType) => void
   logout: () => void
 }

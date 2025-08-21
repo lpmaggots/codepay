@@ -3,12 +3,12 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 import { AuthContextType } from '@/types/AuthContextType'
-import { User } from '@/types/User'
+import { UserType } from '@/types/UserType'
 
 const AuthContext = createContext<AuthContextType & { loading: boolean } | undefined>(undefined)
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<UserType | null>(null)
   const [token, setToken] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -29,7 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(false)
   }, [])
 
-  const login = (token: string, user: User) => {
+  const login = (token: string, user: UserType) => {
     Cookies.set('token', token, { expires: 7 })
     Cookies.set('user', JSON.stringify(user), { expires: 7 })
     setToken(token)
