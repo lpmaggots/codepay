@@ -4,8 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import Logo from '@/assets/images/codepay-logo.png'
 import { FiLogIn, FiLogOut, FiUser, FiMenu, FiX } from 'react-icons/fi'
-
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import Button from '@/shared/Button'
 
@@ -15,6 +14,7 @@ import { useAuth } from '@/providers/AuthContext'
 export default function Navbar() {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
+  const pathname = usePathname()
   const { user, logout, loading } = useAuth()
 
   const navLinks = [
@@ -56,15 +56,18 @@ export default function Navbar() {
         <div className="hidden md:flex items-center space-x-4">
           {user && (
             <section className="flex space-x-2">
-              {navLinks.map(({ label, href }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="py-2 px-3 hover:text-purple-700 transition"
-                >
-                  {label}
-                </Link>
-              ))}
+              {navLinks.map(({ label, href }) => {
+                const isActive = pathname.startsWith(href)
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={`py-2 px-3 hover:text-purple-700 transition ${isActive ? 'text-purple-700' : 'text-gray-500'}`}
+                  >
+                    {label}
+                  </Link>
+                )
+              })}
             </section>
           )}
           {user ? (
@@ -105,15 +108,19 @@ export default function Navbar() {
       {/* Mobile */}
       {isOpen && (
         <div className="md:hidden px-4 pb-4 space-y-3">
-          {user && navLinks.map(({ label, href }) => (
-            <Link
-              key={href}
-              href={href}
-              className="block py-2 px-3 hover:text-purple-700 transition"
-            >
-              {label}
-            </Link>
-          ))}
+          {user &&
+            navLinks.map(({ label, href }) => {
+              const isActive = pathname.startsWith(href)
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`block py-2 px-3 hover:text-purple-700 transition ${isActive ? 'text-purple-700' : 'text-gray-500'}`}
+                >
+                  {label}
+                </Link>
+              )
+            })}
 
           {user ? (
             <div className="flex items-center justify-between">
