@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 import Input from '@/shared/Input'
 import Select from '@/shared/Select'

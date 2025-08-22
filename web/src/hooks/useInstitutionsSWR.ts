@@ -1,6 +1,7 @@
+'use client'
+
 import useSWR from 'swr'
-import { fetcher } from '@/utils/fetcher'
-import { API_ROUTES } from '@/constants/apiRoutes'
+import { API_ROUTES, fetcher } from '@/utils/useImportOnSWR'
 import { InstitutionSchema } from '@/schemas/institutionSchema'
 import { MetaType } from '@/types/metaType'
 

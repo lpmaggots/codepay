@@ -1,5 +1,3 @@
-// src/dashboard/dto/dashboard-summary.dto.ts
-
 import { ApiProperty } from '@nestjs/swagger'
 
 export class DashboardSummaryDto {

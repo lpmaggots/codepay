@@ -1,5 +1,3 @@
-// src/dashboard/dashboard.service.ts
-
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@/prisma/prisma.service'
 import { DashboardSummaryDto } from './dto/dashboard-summary.dto'

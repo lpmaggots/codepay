@@ -14,6 +14,7 @@ import { TransactionTypesModule } from './transactions/transaction-types/transac
 import { TransactionCategoriesModule } from './transactions/transaction-categories/transaction-categories.module'
 import { InstitutionsModule } from './institutions/institutions.module'
 import { InstitutionTypesModule } from './institutions/institution-types/institution-types.module'
+import { DashboardModule } from './dashboard/dashboard.module'
 import { PrismaModule } from '@/prisma/prisma.module'
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard'
 
@@ -27,6 +28,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard'
     }),
     AuthModule,
     UsersModule,
+    DashboardModule,
     AccountsModule,
     AccountTypesModule,
     TransactionsModule,
